@@ -4,8 +4,6 @@ class ChatService {
     private var chats = mutableListOf<Chat>()
 
     fun addOutgoingMessage(message: OutgoingMessage): Int {
-
-
         chats.forEach {
             if (it.id == message.authorId) {
                 it.outgoingMessage += message
