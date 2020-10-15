@@ -49,5 +49,6 @@ fun main() {
     println(chatService.getMessagesFromChat(12, 12, 2))
     chatService.getUnreadChatsCount()
     println(chatService.getUnreadChatsCount())
+    chatService.delChat(11)
 
 }

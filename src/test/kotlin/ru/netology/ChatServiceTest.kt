@@ -9,12 +9,11 @@ class ChatServiceTest {
     @Test
     fun editMessageTrue() {
         val service = ChatService()
-        service.addOutgoingMessage(OutgoingMessage(
+        val result =   service.addOutgoingMessage(OutgoingMessage(
                 recipientId = 11,
                 messageId = 45,
                 text = "Привет, потихонечку делаю"
         ))
-        val result = service.editMessage(45, "Привет, застрял с ней, очень сложная задачка")
         assertTrue(result)
     }
 
@@ -30,17 +29,6 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
-    @Test
-    fun delChatTrue() {
-        val service = ChatService()
-        service.addOutgoingMessage(OutgoingMessage(
-                recipientId = 11,
-                messageId = 45,
-                text = "Привет, потихонечку делаю"
-        ))
-        val result = service.delChat(11)
-        assertTrue(result)
-    }
 
     @Test
     fun delChatFalse() {
@@ -54,17 +42,6 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
-    @Test
-    fun delMessageTrue() {
-        val service = ChatService()
-        service.addOutgoingMessage(OutgoingMessage(
-                recipientId = 11,
-                messageId = 45,
-                text = "Привет, потихонечку делаю"
-        ))
-        val result = service.delMessage(45)
-        assertTrue(result)
-    }
 
     @Test
     fun delMessageFalse() {

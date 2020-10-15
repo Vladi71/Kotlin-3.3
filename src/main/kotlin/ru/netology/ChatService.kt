@@ -3,15 +3,15 @@ package ru.netology
 class ChatService {
     private var chats = mutableListOf<Chat>()
 
-    fun addOutgoingMessage(message: OutgoingMessage): Int {
-        chats.forEach {
-            if (it.id == message.authorId) {
-                it.outgoingMessage += message
-                return it.outgoingMessage.size
-            }
-        }
+    fun addOutgoingMessage(message: OutgoingMessage): Boolean {
+        chats
+                .filter { it.id == message.authorId }
+                .map {it.outgoingMessage += message  }
+                return true
+
+
         chats.add(Chat(id = message.recipientId, outgoingMessage = listOf(message)))
-        return chats.size
+        return true
     }
 
     fun addIncomingMessage(message: IncomingMessage): Int {
@@ -70,33 +70,27 @@ class ChatService {
 
     }
 
-    fun getMessagesFromChat(chatId: Int, lastMessageId: Int, numberOfMessages: Int): List<IncomingMessage> {
-        chats.forEach { chat ->
-            if (chat.id == chatId) {
-                if (!chat.incomingMessage.any { it.messageId == lastMessageId }) {
-                    println("ID последнего сообщения не существует")
-                    return emptyList()
-                }
-                chat.incomingMessage.forEachIndexed { index, incomingMessage ->
-                    if (incomingMessage.messageId == lastMessageId) {
-                        var messages = chat.incomingMessage.subList(
-                                fromIndex = index,
-                                toIndex = chat.incomingMessage.size
-                        )
-                        val indexOutOfBoundsExceptionCheck = if (numberOfMessages <= messages.size) {
-                            numberOfMessages
-                        } else {
-                            messages.size
-                        }
-                        messages.subList(fromIndex = index, toIndex = indexOutOfBoundsExceptionCheck)
-                        messages.forEach { messages: IncomingMessage -> messages.readStatus = true }
-                        return messages
-                    }
-                }
-            }
+    fun getMessagesFromChat(
+            chatId: Int,
+            lastMessageId: Int,
+            numberOfMessages: Int
+    ): List<IncomingMessage> {
+        val chat = chats.find {
+            it.id == chatId
+        } ?: return run {
+            println("Чат ID не найден")
+            emptyList()
         }
-        println("Чат ID не найден")
-        return emptyList()
+
+        if (!chat.incomingMessage.any { it.messageId == lastMessageId }) {
+            println("ID последнего сообщения не существует")
+            return emptyList()
+        }
+        return chat.incomingMessage.asSequence().filter {
+            it.messageId >= lastMessageId
+        }.take(numberOfMessages).apply {
+            forEach { it.readStatus = true }
+        }.toList()
     }
 
     fun getUnreadChatsCount(): Int {
