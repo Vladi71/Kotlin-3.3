@@ -5,14 +5,16 @@ class ChatService {
 
     fun addOutgoingMessage(message: OutgoingMessage): Boolean {
         chats
-                .filter { it.id == message.authorId }
-                .map {it.outgoingMessage += message  }
-                return true
-
+                .find { it.id == message.authorId }
+                ?.let {
+                    it.outgoingMessage += message
+                    return true
+                }
 
         chats.add(Chat(id = message.recipientId, outgoingMessage = listOf(message)))
         return true
     }
+
 
     fun addIncomingMessage(message: IncomingMessage): Int {
         chats.forEach {
